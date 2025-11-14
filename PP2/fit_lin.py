@@ -55,6 +55,28 @@ for i in range(0, 8):
     plt.savefig(f"fit_lin_acqua{i}.png")
     plt.show()
 
+    fig, ax = plt.subplots(2, 1, figsize=(7, 8), sharex=True)
+
+    # --- Plot del fit ---
+    ax[0].errorbar(time_v, y, yerr=sigma_y, fmt='o', markersize=4, label="dati")
+    ax[0].plot(time_v, y_fit, label="fit", color='red')
+    ax[0].set_ylabel("log(T - Tf)")
+    ax[0].set_title(f"Fit file {i}")
+    ax[0].grid(True)
+    ax[0].legend()
+
+    # --- Plot residui normalizzati ---
+    ax[1].axhline(0, color='black', linewidth=0.8)
+    ax[1].errorbar(time_v, res_norm, yerr=np.ones_like(res_norm),
+                   fmt='o', markersize=4)
+    ax[1].set_xlabel("time [s]")
+    ax[1].set_ylabel("residui / sigma")
+    ax[1].set_title("Residui normalizzati")
+    ax[1].grid(True)
+
+    plt.tight_layout()
+    plt.show()
+
 m_array = np.array(m_list)
 um_array = np.array(um_list)
 print("tau per file:", m_array, "incertezze m:", um_array)
