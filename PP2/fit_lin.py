@@ -38,13 +38,17 @@ for i in range(0, 8):
     nu = len(time_v) - 2
     chi2_red = chi2 / nu
 
+    residuals = y - y_fit
+    res_norm = residuals / sigma_y
+
     # costante di tempo
     tau = -1.0 / m1
     u_tau = sm1 / (m1**2)
+    print(f"{m1} & {sm1} & {tau} & {u_tau} \\\\")
 
-    print(f"file {i}: m = {m1:.6g} ± {sm1:.6g}, c = {c1:.6g} ± {sc1:.6g}")
-    print(f"         chi2 = {chi2:.3f}, nu = {nu}, chi2_red = {chi2_red:.3f}")
-    print(f"         tau = {tau:.6g} ± {u_tau:.6g}")
+    # print(f"file {i}: m = {m1:.6g} ± {sm1:.6g}, c = {c1:.6g} ± {sc1:.6g}")
+    # print(f"         chi2 = {chi2:.3f}, nu = {nu}, chi2_red = {chi2_red:.3f}")
+    # print(f"         tau = {tau:.6g} ± {u_tau:.6g}")
 
     m_list.append(tau)
     um_list.append(u_tau)
@@ -55,26 +59,15 @@ for i in range(0, 8):
     plt.savefig(f"fit_lin_acqua{i}.png")
     plt.show()
 
-    fig, ax = plt.subplots(2, 1, figsize=(7, 8), sharex=True)
 
-    # --- Plot del fit ---
-    ax[0].errorbar(time_v, y, yerr=sigma_y, fmt='o', markersize=4, label="dati")
-    ax[0].plot(time_v, y_fit, label="fit", color='red')
-    ax[0].set_ylabel("log(T - Tf)")
-    ax[0].set_title(f"Fit file {i}")
-    ax[0].grid(True)
-    ax[0].legend()
-
-    # --- Plot residui normalizzati ---
-    ax[1].axhline(0, color='black', linewidth=0.8)
-    ax[1].errorbar(time_v, res_norm, yerr=np.ones_like(res_norm),
-                   fmt='o', markersize=4)
-    ax[1].set_xlabel("time [s]")
-    ax[1].set_ylabel("residui / sigma")
-    ax[1].set_title("Residui normalizzati")
-    ax[1].grid(True)
-
-    plt.tight_layout()
+    plt.axhline(0, color='black', linewidth=0.8)
+    plt.errorbar(time_v, res_norm, yerr=np.ones_like(res_norm),
+                 fmt='o', markersize=4)
+    plt.xlabel("tempo [s]")
+    plt.ylabel("residui normalizzati")
+    plt.title(f"Residui normalizzati del fit temperatura vs tempo")
+    plt.grid(True)
+    plt.savefig(f"fit_lin_acqua_res{i}.png")
     plt.show()
 
 m_array = np.array(m_list)
