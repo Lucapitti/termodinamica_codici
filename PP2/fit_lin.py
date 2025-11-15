@@ -4,12 +4,12 @@ import my_lib_santanastasio as my
 
 m_list = []
 um_list = []
-Tf = 16.81588
+Tf = 26.39010
 
-for i in range(0, 8):
-    file = f"data/fit_acqua/temp_acqua{i}.txt"
+for i in range(0, 5):
+    file = f"data/fit_aria/temp_aria{i}.txt"
     time, Temp = np.loadtxt(file, unpack=True)
-    time = time - time[0]
+    #time = time - time[0]
 
     # errore su T (assunto costante)
     uTemp = np.repeat(0.014, len(Temp))
@@ -30,17 +30,33 @@ for i in range(0, 8):
 
     # esegui il fit (usa la tua funzione my.lin_fit)
     # signature attesa: lin_fit(x, y, sigma_y, plot=True/False, verbose=...)
-    m1, sm1, c1, sc1, cov1, rho1 = my.lin_fit(time_v, y, sigma_y, plot=True, verbose=False)
+    m1, sm1, c1, sc1, cov1, rho1 = my.lin_fit(time_v, y, sigma_y, plot=False, verbose=False)
 
     # residui e chi quadro
     y_fit = m1 * time_v + c1
     chi2 = np.sum(((y - y_fit) / sigma_y)**2)
     nu = len(time_v) - 2
     chi2_red = chi2 / nu
+    print(chi2_red)
 
     residuals = y - y_fit
     res_norm = residuals / sigma_y
+    
+    #########################################################################################
 
+    # Incertezze a posteriori
+    sigmy_post = np.sqrt( np.sum(residuals**2)/(residuals.size-2) )
+    uy_post = np.repeat(sigmy_post,y.size)
+    print (sigmy_post)
+
+    # Nuovo fit con incertezze a posteriori sulle y
+    m1, sm1, c1, sc1, cov1, rho1 = my.lin_fit(time_v, y, uy_post, plot=True, verbose=False)
+    chi2 = np.sum(((y - y_fit) / uy_post)**2)
+    print(chi2 / nu)
+    res_norm = residuals / sigmy_post
+
+    #########################################################################################
+    
     # costante di tempo
     tau = -1.0 / m1
     u_tau = sm1 / (m1**2)
@@ -52,7 +68,7 @@ for i in range(0, 8):
 
     m_list.append(tau)
     um_list.append(u_tau)
-    plt.xlabel("$t [s[$")
+    plt.xlabel("$t [s]$")
     plt.ylabel("$In(T - T_f)$")
     plt.grid()
     plt.title("Fit lineare tempo caratteristico")
@@ -72,4 +88,3 @@ for i in range(0, 8):
 
 m_array = np.array(m_list)
 um_array = np.array(um_list)
-print("tau per file:", m_array, "incertezze m:", um_array)
