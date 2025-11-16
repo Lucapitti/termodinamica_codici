@@ -20,7 +20,7 @@ filenames = [["data/Posizione_1bullone_mod_cut.txt",
 "data/Posizione_5bullvite_mod_cut.txt", "data/Posizione_2viti_mod_cut.txt"], ["data/Posizione_cilindro_1bull_mod_cut.txt", "data/Posizione_cilindro_2bull_mod_cut.txt", "data/Posizione_cilindro_4bull_mod_cut.txt", "data/Posizione_cilindro_5bullvite_mod_cut.txt", "data/Posizione_cilindro_2viti_mod_cut.txt"]]
 
 S = (3.25/2)**2*math.pi
-uS = 3.25*math.pi*0.05
+uS = 3.25*math.pi*0.01
 
 w = []
 count = 0
@@ -39,13 +39,13 @@ for files in filenames:
 
 	ualfa = np.array(ualfa)
 	alfa = np.array(alfa)
-	print(ualfa/alfa)
-	beta = np.array(alfa)*S
-	ubeta = np.sqrt((np.array(ualfa)*S)**2 + (uS*np.array(alfa))**2)
+	beta = alfa*S
+	ubeta = np.sqrt((ualfa*S)**2 + (uS*alfa)**2)
+	print("\n")
+	for i in range(0, len(alfa)):
+		print(f"${i + 1}^\\circ$\t& {alfa[i]}\t& {ualfa[i]}\t& {beta[i]}\t& {ubeta[i]}")
 	pressione = (np.array([15.3, 30.7, 61.5, 99.8, 183.8]) + 35)*9.81/S/100
 	upressione = np.sqrt((9.81/S/100)**2*(0.03**2 + 0.6**2) + (pressione/S*uS)**2)
-	print(ubeta/beta)
-	print(upressione/pressione)
 	m, um, c, uc, cov, rho = my.lin_fit(pressione, beta, ubeta, plot=False, verbose=False)
 	m, um, c, uc, cov, rho = my.lin_fit(pressione, beta, np.sqrt(ubeta**2 + (m*upressione)**2), plot=True)
 	plt.title("Fit lineare coefficiente di tenuta $\\beta$ in funzione della pressione")
@@ -60,7 +60,6 @@ for files in filenames:
 	nu = len(beta) - 2
 	chi2_red = chi2 / nu
 	print(chi2_red)
-	print(nu)
 
 	residuals = beta - y_fit
 	res_norm = residuals / np.sqrt(ubeta**2 + (m*upressione)**2)
@@ -77,4 +76,5 @@ for files in filenames:
 
 	count = count + 1
 	w.append((m, um))
+w = np.array(w)
 print(w)

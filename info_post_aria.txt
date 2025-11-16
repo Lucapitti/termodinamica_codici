@@ -1,0 +1,97 @@
+m_fit = (108.41283348596234 +/- 0.39112968814705384 ) [y/x] [0.36%]
+c_fit = (56.865702574254016 +/- 0.01656517622799877 ) [y] [0.03%]
+Cov[m,c] fit -0.005383421620535955
+Rho[m,c] fit -0.8308862119581256
+
+time, Temp= np.loadtxt("data/fit_aria/temp_aria0.txt", unpack=True)
+time = time - time[0]
+
+# Tf = 16.81588 # acqua
+Tf = 26.39010 # aria
+
+
+uy_new = np.repeat(0.14, len(Temp))
+
+
+m_values = np.linspace(107.4, 109.4, 100)
+c_values = np.linspace(56.8, 56.925, 100)
+
+*******************************************************
+
+m_fit = (100.35722916301225 +/- 0.46921653058421603 ) [y/x] [0.47%]
+c_fit = (49.42947747269567 +/- 0.017189529786065725 ) [y] [0.03%]
+Cov[m,c] fit -0.006779529516279581
+Rho[m,c] fit -0.8405474888353864
+
+time, Temp= np.loadtxt("data/fit_aria/temp_aria1.txt", unpack=True)
+time = time - time[0]
+
+# Tf = 16.81588 # acqua
+Tf = 26.39010 # aria
+
+
+uy_new = np.repeat(0.14, len(Temp))
+
+
+m_values = np.linspace(99, 102, 100)
+c_values = np.linspace(49.35, 49.5, 100)
+
+*******************************************************
+
+m_fit 100.30414204550061185728 \pm 0.06167518536051307815 [y/x] [0.00%]
+c_fit 43.47404396259582881612 \pm 0.00169218133644678738 [y] [0.00%]
+Cov[m,c] fit -8.691082348377677e-05
+Rho[m,c] fit -0.832753565270376
+
+time, Temp= np.loadtxt("data/fit_aria/temp_aria2.txt", unpack=True)
+time = time - time[0]
+
+# Tf = 16.81588 # acqua
+Tf = 26.39010 # aria
+
+
+uy_new = np.repeat(0.014, len(Temp))
+
+
+m_values = np.linspace(100.14, 100.475, 100)
+c_values = np.linspace(43.4675, 43.48, 100)
+
+*******************************************************
+
+m_fit 98.85608873439529986626 \pm 0.77814107395069742612 [y/x] [0.01%]
+c_fit 39.18554579270187332440 \pm 0.01645475947943018935 [y] [0.00%]
+Cov[m,c] fit -0.010570104704129335
+Rho[m,c] fit -0.8255234429434918
+
+time, Temp= np.loadtxt("data/fit_aria/temp_aria3.txt", unpack=True)
+time = time - time[0]
+
+# Tf = 16.81588 # acqua
+Tf = 26.39010 # aria
+
+
+uy_new = np.repeat(0.14, len(Temp))
+
+
+m_values = np.linspace(97, 101, 100)
+c_values = np.linspace(39.14, 39.24, 100)
+
+*******************************************************
+
+m_fit 108.20560804647962527270 \pm 0.13198140566840085852 [y/x] [0.00%]
+c_fit 35.78740876774730850229 \pm 0.00171342520484023242 [y] [0.00%]
+Cov[m,c] fit -0.00018967200730912737
+Rho[m,c] fit -0.838736107415565
+
+time, Temp= np.loadtxt("data/fit_aria/temp_aria4.txt", unpack=True)
+time = time - time[0]
+
+# Tf = 16.81588 # acqua
+Tf = 26.39010 # aria
+
+
+uy_new = np.repeat(0.014, len(Temp))
+
+
+m_values = np.linspace(107.8, 108.6, 100)
+c_values = np.linspace(35.775, 35.8, 100)

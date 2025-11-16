@@ -71,8 +71,8 @@ for i in range(0, 5):
     plt.xlabel("$t [s]$")
     plt.ylabel("$In(T - T_f)$")
     plt.grid()
-    plt.title("Fit lineare tempo caratteristico")
-    plt.savefig(f"fit_lin_acqua{i}.png")
+    plt.title("Fit lineare tempo caratteristico per aria")
+    plt.savefig(f"img/fit_lin_aria_{i}.png")
     plt.show()
 
 
@@ -83,7 +83,7 @@ for i in range(0, 5):
     plt.ylabel("residui normalizzati")
     plt.title(f"Residui normalizzati del fit temperatura vs tempo")
     plt.grid(True)
-    plt.savefig(f"fit_lin_acqua_res{i}.png")
+    plt.savefig(f"img/fit_lin_aria_res{i}.png")
     plt.show()
 
 m_array = np.array(m_list)
