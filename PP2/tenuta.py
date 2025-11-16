@@ -13,6 +13,49 @@ from scipy import optimize
 random_Gseed = 1112
 np.random.seed(random_Gseed)
 
+import numpy as np
+import matplotlib.pyplot as plt
+
+def fit_con_posteriori(pressione, beta, ubeta, upressione, count):
+	# Primo fit con incertezze combinate
+	m, um, c, uc, cov, rho = my.lin_fit(pressione, beta, ubeta, plot=False, verbose=False)
+	u_comb = np.sqrt(ubeta**2 + (m*upressione)**2)
+	m, um, c, uc, cov, rho = my.lin_fit(pressione, beta, u_comb, plot=False, verbose=False)
+
+	# Calcolo chi2 e incertezze a posteriori
+	y_fit = m * pressione + c
+	res = beta - y_fit
+	sigma_post = np.sqrt(np.sum(res**2)/(len(beta)-2))
+	u_post = np.full_like(beta, sigma_post)
+
+	# Fit finale con incertezze posteriori
+	mf, umf, cf, ucf, covf, rhof = my.lin_fit(pressione, beta, u_post, plot=True, verbose=False)
+
+	plt.title("Fit $\\beta$ vs pressione")
+	plt.xlabel("pressione [kPa]")
+	plt.ylabel("$\\beta\\text{ }[cm^3/min]$")
+	plt.grid()
+	plt.legend()
+	plt.savefig(f"img/fit_beta_pressione_{count}.png")
+	plt.show()
+
+	# Plot residui normalizzati
+	res_norm = res / sigma_post
+	plt.figure()
+	plt.axhline(0, lw=0.8, color='black')
+	plt.errorbar(pressione, res_norm, yerr=np.ones_like(res_norm), fmt='o')
+	plt.title("Residui normalizzati")
+	plt.xlabel("pressione [kPa]")
+	plt.ylabel("Residui normalizzati")
+	plt.grid(True)
+	plt.savefig(f"img/res_beta_pressione_{count}.png")
+	plt.show()
+
+	# Reduced chi² finale
+	chi2_red = np.sum(res_norm**2) / (len(beta)-2)
+
+	return mf, umf, cf, ucf, chi2_red, sigma_post
+
 
 filenames = [["data/Posizione_1bullone_mod_cut.txt",
 "data/Posizione_2bulloni_mod_cut.txt",
@@ -43,37 +86,10 @@ for files in filenames:
 	ubeta = np.sqrt((ualfa*S)**2 + (uS*alfa)**2)
 	print("\n")
 	for i in range(0, len(alfa)):
-		print(f"${i + 1}^\\circ$\t& {alfa[i]}\t& {ualfa[i]}\t& {beta[i]}\t& {ubeta[i]}")
+		print(f"{i + 1}\t& {alfa[i]}\t& {ualfa[i]}\t& {beta[i]}\t& {ubeta[i]} \\\\")
 	pressione = (np.array([15.3, 30.7, 61.5, 99.8, 183.8]) + 35)*9.81/S/100
 	upressione = np.sqrt((9.81/S/100)**2*(0.03**2 + 0.6**2) + (pressione/S*uS)**2)
-	m, um, c, uc, cov, rho = my.lin_fit(pressione, beta, ubeta, plot=False, verbose=False)
-	m, um, c, uc, cov, rho = my.lin_fit(pressione, beta, np.sqrt(ubeta**2 + (m*upressione)**2), plot=True)
-	plt.title("Fit lineare coefficiente di tenuta $\\beta$ in funzione della pressione")
-	plt.xlabel("$\\beta [cm^3/min]$")
-	plt.ylabel("$presssione [kPa]$")
-	plt.grid()
-	plt.savefig(f"img/fit_beta_pressione_{count}.png")
-	plt.show()
-
-	y_fit = m * pressione + c
-	chi2 = np.sum((beta - y_fit)**2 / (ubeta**2 + (m*upressione)**2))
-	nu = len(beta) - 2
-	chi2_red = chi2 / nu
-	print(chi2_red)
-
-	residuals = beta - y_fit
-	res_norm = residuals / np.sqrt(ubeta**2 + (m*upressione)**2)
-
-	plt.axhline(0, color='black', linewidth=0.8)
-	plt.errorbar(pressione, res_norm, yerr=np.ones_like(res_norm),
-                 fmt='o', markersize=4)
-	plt.xlabel("tempo [s]")
-	plt.ylabel("residui normalizzati")
-	plt.title(f"Residui normalizzati del fit temperatura vs tempo")
-	plt.grid(True)
-	plt.savefig(f"img/res_beta_pressione_{count}.png")
-	plt.show()
-
+	m, um, c, uc, cov, rho = fit_con_posteriori(pressione, beta, ubeta, upressione, count)
 	count = count + 1
 	w.append((m, um))
 w = np.array(w)
