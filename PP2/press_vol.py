@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import my_lib_santanastasio as my
 
-tempo, pressione = np.loadtxt("data/pressione_volume_mod.txt", unpack=True, skiprows=1)
+tempo, pressione = np.loadtxt("data/pressione_volume2_mod.txt", unpack=True, skiprows=1)
 intervalli = [
     (0, 4.5),
     (15.5, 55.6),
@@ -22,13 +22,13 @@ intervalli2 = [
 ]
 
 medie_pressione = []
-for (tmin, tmax) in intervalli:
+for (tmin, tmax) in intervalli2:
     mask = (tempo >= tmin) & (tempo <= tmax)
     media = np.mean(pressione[mask])
     medie_pressione.append(media)
 
-for i, (tmin, tmax) in enumerate(intervalli):
-    print(f"${medie_pressione[i]:.3f} \\pm {0.0014/np.sqrt((tmax - tmin)*100)}$ per $t \in ({tmin}, {tmax})$\t& ")
+for i, (tmin, tmax) in enumerate(intervalli2):
+    print(f"${medie_pressione[i]:.6f} \\pm {0.0014/np.sqrt((tmax - tmin)*100)}$ per $t \in ({tmin}, {tmax})$\t& ")
 P0 = 101.26
 V0 = 1112.77 + 54
 sigma_deltaV = 0.41

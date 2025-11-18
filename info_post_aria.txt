@@ -95,3 +95,23 @@ uy_new = np.repeat(0.014, len(Temp))
 
 m_values = np.linspace(107.8, 108.6, 100)
 c_values = np.linspace(35.775, 35.8, 100)
+
+*******************************************************
+
+m_fit = 3.91271662762385830092 \pm 0.02241864373885876435 [y/x] [0.57%]
+c_fit = 57.79819440949026443377 \pm 0.16001563621655523484 [y] [0.28%]
+Cov[m,c] fit -0.002570569820363744
+Rho[m,c] fit -0.7165683901412097
+
+time, Temp= np.loadtxt("data/temp_acqua_grafico.txt", unpack=True)
+time = time - time[0]
+
+Tf = 16.73086 # acqua
+# Tf = 26.39010 # aria
+
+
+uy_new = np.repeat(0.5, len(Temp))
+
+
+m_values = np.linspace(3.825, 4.0, 100)
+c_values = np.linspace(57, 58.5, 100)
