@@ -2,24 +2,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import my_lib_santanastasio as my
 
-tempo, pressione = np.loadtxt("data/pressione_volume_mod.txt", unpack=True, skiprows=1)
-intervalli = [
-    (0, 4.5),
-    (15.5, 55.6),
-    (75, 116),
-    (140, 175),
-    (200, 230),
-    (260, 290)
-]
-
-intervalli2 = [
-    (0, 4.8),
-    (25, 50),
-    (80, 110),
-    (145, 175),
-    (205, 235),
-    (260, 290)
-]
+tempo, pressione = np.loadtxt("data/test_pressione_mod.txt", unpack=True, skiprows=1)
+plt.plot(tempo, pressione)
+plt.show()
+intervalli = [(25, 48), (70, 86), (108, 125), (151, 168), (190, 205)]
 
 medie_pressione = []
 for (tmin, tmax) in intervalli:
@@ -29,10 +15,10 @@ for (tmin, tmax) in intervalli:
 
 for i, (tmin, tmax) in enumerate(intervalli):
     print(f"${medie_pressione[i]:.6f} \\pm {0.0014/np.sqrt((tmax - tmin)*100)}$ per $t \in ({tmin}, {tmax})$\t& ")
-P0 = 101.26
+P0 = 100.3
 V0 = 1112.77 + 54
 sigma_deltaV = 0.3
-Delta_volume = np.array([0, -11, -22, -34, -45, -54])
+Delta_volume = np.array([0, -11, -22, -33, -44])
 Delta_pressioni = np.array(medie_pressione)
 upressioni = np.repeat(0.001, len(Delta_pressioni))
 uVol = np.sqrt((Delta_volume/V0**2 * 5)**2 + (1/V0 * sigma_deltaV)**2)
