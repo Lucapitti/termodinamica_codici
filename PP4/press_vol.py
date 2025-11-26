@@ -2,23 +2,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import my_lib_santanastasio as my
 
-tempo, pressione = np.loadtxt("data/pressione_volume_mod.txt", unpack=True, skiprows=1)
-
 pres_max = []
 pres_min = []
 
-intervalli = [
-    (),
-    (),
-    (),
-    (),
-    (),
-]
-
-for (tmin, tmax) in intervalli:
-    mask = (tempo >= tmin) & (tempo <= tmax)
-    pres_max.append(np.max(pressione[mask]))
-    pres_min.append(np.min(pressione[mask]))
+for i in range(0, 5):
+    tempo, pressione = np.loadtxt(f"data/pressione_volume_{i + 1}_mod.txt", unpack=True, skiprows=1)
+    pres_max.append(np.max(pressione))
+    pres_min.append(np.min(pressione[-10:-1]))
 
 data = []
 
