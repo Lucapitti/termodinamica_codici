@@ -65,13 +65,16 @@ for i in range (1, 4):
 	temperatura = temperatura[i_min:i_max]
 	pressione = pressione[i_min:i_max]
 
-	temperatura = temperatura*2 - 26
+	#temperatura = temperatura*2 - 26
 
 	# plt.plot(temperatura, pressione, label="Pressione", color="red")
 	# plt.grid(True)
 	# plt.show()
 
 	temperatura += 273.15
+	pressioni_vapore = np.exp(23.1964 - (3816.44/(temperatura - 46.13))) / 1000
+	pressione = pressione - pressioni_vapore
+	print(pressioni_vapore[-1])
 	uT0 = 0.014
 	P0 = 100.300
 	uP0 = 0.003
@@ -92,5 +95,18 @@ for i in range (1, 4):
 	plt.show()
 	m, um, c, uc, cov, rho = my.lin_fit((temperatura - T0)/T0, pressione/P0, np.sqrt(udpsup**2 + (m*udtsut)**2), plot=True)
 	plt.show()
-	print((m - 1)/um)
+	
+	
+	y_pred = pressione/P0 * m + c
+	res = y_pred - (temperatura - T0)/T0
+
+	res_norm = res / np.sqrt(udpsup**2 + (m*udtsut)**2)
+	plt.figure()
+	plt.axhline(0, lw=0.8, color='black')
+	plt.errorbar(pressione/P0, res_norm, yerr=np.ones_like(res_norm), fmt='o')
+	plt.title("Residui normalizzati")
+	plt.xlabel("pressione [kPa]")
+	plt.ylabel("Residui normalizzati")
+	plt.grid(True)
+	plt.show()
 
