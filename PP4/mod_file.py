@@ -21,9 +21,8 @@ from scipy import optimize
 random_Gseed = 1112
 np.random.seed(random_Gseed)
 
-# filenames = ["data/Posizione_cilindro_1bull.txt", "data/Posizione_cilindro_2bull.txt",  "data/Posizione_cilindro_2viti.txt", "data/Posizione_cilindro_4bull.txt", "data/Posizione_cilindro_5bullvite.txt"] 
-
-filenames = ["data/temp_aria.txt"]
+filenames = ["data/pressione_volume_5.txt", "data/pressione_volume_4.txt",  "data/pressione_volume_3.txt", "data/pressione_volume_2.txt","data/pressione_volume_1.txt", "data/temp.txt"] 
+# filenames = ["data/sigma_5.txt", "data/sigma_4.txt",  "data/sigma_3.txt", "data/sigma_2.txt","data/sigma_1.txt", "data/temp.txt"] 
 
 for myfilename in filenames:
 	myfilenamemod = myfilename.replace(".txt", "_mod.txt")
