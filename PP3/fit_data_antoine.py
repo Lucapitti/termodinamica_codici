@@ -45,8 +45,8 @@ print(utemp_a)
 for i in range (1, 4):
 	temperatura, pressione = np.loadtxt(f"data/temp_pressione_{i}_mod.txt", skiprows=1, unpack=True)
 
-	T_min = 30
-	T_max = 37
+	T_min = 32
+	T_max = 36
 
 	i_min = -1
 	i_max = -1
@@ -73,7 +73,7 @@ for i in range (1, 4):
 
 	temperatura += 273.15
 	pressioni_vapore = np.exp(23.1964 - (3816.44/(temperatura - 46.13))) / 1000
-	pressione = pressione - pressioni_vapore
+	pressione = (pressione - pressioni_vapore)*0.965
 	print(pressioni_vapore[-1])
 	uT0 = 0.014
 	P0 = 100.300
@@ -82,7 +82,7 @@ for i in range (1, 4):
 	P0 = 100.300
 
 	up = 0.038
-	udpsup = np.sqrt((up/P0)**2 + (pressione/P0**2*uP0)**2)
+	udpsup = np.sqrt((up*0.965/P0)**2 + (pressione/P0**2*uP0)**2 + (pressione/0.965/P0*0.009)**2)
 	# print(udpsup/(pressione/P0))
 
 
@@ -97,16 +97,18 @@ for i in range (1, 4):
 	plt.show()
 	
 	
-	y_pred = pressione/P0 * m + c
-	res = y_pred - (temperatura - T0)/T0
+	y_pred = (temperatura - T0)/T0* m + c
+	res = y_pred - pressione/P0
 
 	res_norm = res / np.sqrt(udpsup**2 + (m*udtsut)**2)
+
 	plt.figure()
 	plt.axhline(0, lw=0.8, color='black')
-	plt.errorbar(pressione/P0, res_norm, yerr=np.ones_like(res_norm), fmt='o')
+	plt.errorbar((temperatura - T0)/T0, res_norm, yerr=np.ones_like(res_norm), fmt='o')
 	plt.title("Residui normalizzati")
-	plt.xlabel("pressione [kPa]")
+	plt.xlabel("$\Delta p / p_0$")
 	plt.ylabel("Residui normalizzati")
 	plt.grid(True)
+	plt.savefig(f"img/res_norm_antoine_{i}.png")
 	plt.show()
 
