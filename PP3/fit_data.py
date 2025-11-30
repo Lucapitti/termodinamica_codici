@@ -37,6 +37,10 @@ import matplotlib.pyplot as plt
 # 		chi2_red = np.sum(res_norm**2) / (len(y)-2)
 
 # 	return m, um, c, uc, chi2_red, sigma_post
+
+m_list = []
+um_list = []
+
 for i in range (1, 4):
 	temperatura, pressione = np.loadtxt(f"data/temp_pressione_{i}_mod.txt", skiprows=1, unpack=True)
 
@@ -83,6 +87,8 @@ for i in range (1, 4):
 	m, um, c, uc, cov, rho = my.lin_fit(x, y, udpsup, plot=False, verbose=False)
 	ucomb = np.sqrt(udpsup**2 + (m*udtsut)**2)
 	m, um, c, uc, cov, rho = my.lin_fit(x, y, ucomb, plot=True, verbose=False)
+	m_list.append(m)
+	um_list.append(um)
 	plt.title("Fit $\\Delta p/p_0$ vs $\\Delta T/T_0$")
 	plt.xlabel("$\\Delta T/T_0$")
 	plt.ylabel("$\\Delta p / p_0$")
@@ -102,12 +108,16 @@ for i in range (1, 4):
 	plt.savefig(f"img/res_norm_dp_dt_{i}.png")
 	plt.show()
 
+print(np.mean(m_list))
+sigma_a = np.sqrt(np.sum((m_list - np.mean(m_list))**2/(len(m_list) - 1)))/np.sqrt(len(m_list))
+sigma_tot = np.sqrt( (um_list[0]/len(m_list))**2 + (um_list[1]/len(m_list))**2 + (um_list[2]/len(m_list))**2 + sigma_a**2)
+print(sigma_tot)
 
-plt.axvspan(T_min, T_max, color='orange', alpha=0.3, label='intervallo per fit lineare')
-plt.xlabel("$T [^oC]$")
-plt.ylabel("$\Delta p [kPa]$")
-plt.grid()
-plt.title("Grafico $\\Delta p$ vs $T$")
-plt.legend()
-plt.savefig(f"img/grafico_pressione_temp.png")
-plt.show()
+# plt.axvspan(T_min, T_max, color='orange', alpha=0.3, label='intervallo per fit lineare')
+# plt.xlabel("$T [^oC]$")
+# plt.ylabel("$\Delta p [kPa]$")
+# plt.grid()
+# plt.title("Grafico $\\Delta p$ vs $T$")
+# plt.legend()
+# plt.savefig(f"img/grafico_pressione_temp.png")
+# plt.show()

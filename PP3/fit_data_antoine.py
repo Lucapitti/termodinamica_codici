@@ -37,10 +37,10 @@ import matplotlib.pyplot as plt
 # 		chi2_red = np.sum(res_norm**2) / (len(y)-2)
 
 # 	return m, um, c, uc, chi2_red, sigma_post
-time, temp = np.loadtxt("../PP2/data/temp_acqua_mod.txt", unpack=True, skiprows=1)
-temp = temp[-20:]
-utemp_a = np.sqrt(np.sum((temp - np.mean(temp))**2)/(len(temp)- 1))
-print(utemp_a)
+
+
+m_list = []
+um_list = []
 
 for i in range (1, 4):
 	temperatura, pressione = np.loadtxt(f"data/temp_pressione_{i}_mod.txt", skiprows=1, unpack=True)
@@ -54,6 +54,7 @@ for i in range (1, 4):
 
 	T0 = temperatura[0] + 273.15
 	pressione = pressione
+
 
 
 	for i in range(len(temperatura)):
@@ -95,7 +96,9 @@ for i in range (1, 4):
 	plt.show()
 	m, um, c, uc, cov, rho = my.lin_fit((temperatura - T0)/T0, pressione/P0, np.sqrt(udpsup**2 + (m*udtsut)**2), plot=True)
 	plt.show()
-	
+	m_list.append(m)
+	um_list.append(um)
+	print(f"{i}\t& {m}\t& {um}\t& {c}\t& {uc}\t& {cov}\t& {rho}\\\\")
 	
 	y_pred = (temperatura - T0)/T0* m + c
 	res = y_pred - pressione/P0
@@ -112,3 +115,7 @@ for i in range (1, 4):
 	plt.savefig(f"img/res_norm_antoine_{i}.png")
 	plt.show()
 
+print(np.mean(m_list))
+sigma_a = np.sqrt(np.sum((m_list - np.mean(m_list))**2/(len(m_list) - 1)))/np.sqrt(len(m_list))
+sigma_tot = np.sqrt( (um_list[0]/len(m_list))**2 + (um_list[1]/len(m_list))**2 + (um_list[2]/len(m_list))**2 + sigma_a**2)
+print(sigma_tot)
