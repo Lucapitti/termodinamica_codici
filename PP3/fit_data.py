@@ -37,76 +37,88 @@ import matplotlib.pyplot as plt
 # 		chi2_red = np.sum(res_norm**2) / (len(y)-2)
 
 # 	return m, um, c, uc, chi2_red, sigma_post
-time, temp = np.loadtxt("../PP2/data/temp_acqua_mod.txt", unpack=True, skiprows=1)
-temp = temp[-20:]
-utemp_a = np.sqrt(np.sum((temp - np.mean(temp))**2)/(len(temp)- 1))
-print(utemp_a)
-
 for i in range (1, 4):
 	temperatura, pressione = np.loadtxt(f"data/temp_pressione_{i}_mod.txt", skiprows=1, unpack=True)
 
 	T_min = 30
-	T_max = 37
+	T_max = 36.5
 
 	i_min = -1
 	i_max = -1
 
-
 	T0 = temperatura[0] + 273.15
 	pressione = pressione
+	plt.plot(temperatura, pressione, label=f"presa dati $n^o$ {i}")
 
 
-	for i in range(len(temperatura)):
-		if (temperatura[i] > T_min and i_min == -1):
-			i_min = i
-		if (temperatura[i] > T_max and i_max == -1):
-			i_max = i
+	# for i in range(len(temperatura)):
+	# 	if (temperatura[i] > T_min and i_min == -1):
+	# 		i_min = i
+	# 	if (temperatura[i] > T_max and i_max == -1):
+	# 		i_max = i
 
-	temperatura = temperatura[i_min:i_max]
-	pressione = pressione[i_min:i_max]
+	# temperatura = temperatura[i_min:i_max]
+	# pressione = pressione[i_min:i_max]
 
-	#temperatura = temperatura*2 - 26
+	# # temperatura = temperatura*2 - 26
 
-	# plt.plot(temperatura, pressione, label="Pressione", color="red")
+	# temperatura += 273.15
+	# uT0 = 0.014
+	# P0 = 100.300
+	# uP0 = 0.003
+
+	# P0 = 100.300
+
+	# up = 0.038
+	# udpsup = np.sqrt((up/P0)**2 + (pressione/P0**2*uP0)**2)
+	# # print(udpsup/(pressione/P0))
+
+
+	# udt = 0.02
+	# udtsut = np.sqrt((udt/T0)**2 + (temperatura/T0**2*uT0)**2)
+	# # print(udtsut/((temperatura -T0)/T0))
+
+	# # print(pressione[-1], temperatura[-1], T0, P0)
+	# x = (temperatura - T0)/T0
+	# y = pressione*0.965/P0
+	# m, um, c, uc, cov, rho = my.lin_fit(x, y, udpsup, plot=False, verbose=False)
+	# ucomb = np.sqrt(udpsup**2 + (m*udtsut)**2)
+	# m, um, c, uc, cov, rho = my.lin_fit(x, y, ucomb, plot=True, verbose=False)
+	# plt.title("Fit $\\Delta p/p_0$ vs $\\Delta T/T_0$")
+	# plt.xlabel("$\\Delta T/T_0$")
+	# plt.ylabel("$\\Delta p / p_0$")
+	# plt.grid()
+	# plt.legend()
+	# # plt.savefig(f"img/fit_y_x_{}.png")
+	# plt.show()
+	# print(f"m fit = {m} +- {um}")
+	# res = (y - (m*x + c))/ucomb
+	# chi2_red = np.sum(res**2) / (len(y)-2)
+	# # print(chi2_red)
+	# plt.errorbar(x, res, yerr=1, fmt='o')
+	# plt.title("Residui normalizzati")
+	# plt.xlabel("x [kPa]")
+	# plt.ylabel("Residui normalizzati")
 	# plt.grid(True)
+	# # plt.savefig(f"img/res_y_x_{count}.png")
 	# plt.show()
 
-	temperatura += 273.15
-	pressioni_vapore = np.exp(23.1964 - (3816.44/(temperatura - 46.13))) / 1000
-	pressione = pressione - pressioni_vapore
-	print(pressioni_vapore[-1])
-	uT0 = 0.014
-	P0 = 100.300
-	uP0 = 0.003
 
-	P0 = 100.300
-
-	up = 0.038
-	udpsup = np.sqrt((up/P0)**2 + (pressione/P0**2*uP0)**2)
-	# print(udpsup/(pressione/P0))
-
-
-	udt = 2*np.sqrt(0.014**2 + 0.03**2)
-	udtsut = np.sqrt((udt/T0)**2 + (temperatura/T0**2*uT0)**2)
-	# print(udtsut/((temperatura -T0)/T0))
-
-	# print(pressione[-1], temperatura[-1], T0, P0)
-	m, um, c, uc, cov, rho = my.lin_fit((temperatura - T0)/T0, pressione/P0, udpsup, plot=True, verbose=False)
-	plt.show()
-	m, um, c, uc, cov, rho = my.lin_fit((temperatura - T0)/T0, pressione/P0, np.sqrt(udpsup**2 + (m*udtsut)**2), plot=True)
-	plt.show()
-	
-	
-	y_pred = pressione/P0 * m + c
-	res = y_pred - (temperatura - T0)/T0
-
-	res_norm = res / np.sqrt(udpsup**2 + (m*udtsut)**2)
-	plt.figure()
-	plt.axhline(0, lw=0.8, color='black')
-	plt.errorbar(pressione/P0, res_norm, yerr=np.ones_like(res_norm), fmt='o')
-	plt.title("Residui normalizzati")
-	plt.xlabel("pressione [kPa]")
-	plt.ylabel("Residui normalizzati")
-	plt.grid(True)
-	plt.show()
-
+	# sigma_post = np.sqrt(np.sum(res**2)/(len(y)-2))
+	# u_post = np.full_like(y, sigma_post)
+	# m, um, c, uc, cov, rho = my.lin_fit(x, y, u_post, plot=True, verbose=True)
+	# plt.title("Fit $\\Delta p/p_0$ vs $\\Delta T/T_0$")
+	# plt.xlabel("$\\Delta T/T_0 \\,[K]$")
+	# plt.ylabel("$\\Delta p / p_0\\,[kPa]$")
+	# plt.grid()
+	# plt.legend()
+	# # plt.savefig(f"img/fit_y_x_{}.png")
+	# plt.show()
+plt.axvspan(T_min, T_max, color='orange', alpha=0.3, label='intervallo per fit lineare')
+plt.xlabel("$T [^oC]$")
+plt.ylabel("$\Delta p [kPa]$")
+plt.grid()
+plt.title("Grafico $\\Delta p$ vs $T$")
+plt.legend()
+plt.savefig(f"img/grafico_pressione_temp{i}.png")
+plt.show()
