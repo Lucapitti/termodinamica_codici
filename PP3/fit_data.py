@@ -37,6 +37,10 @@ import matplotlib.pyplot as plt
 # 		chi2_red = np.sum(res_norm**2) / (len(y)-2)
 
 # 	return m, um, c, uc, chi2_red, sigma_post
+time, temp = np.loadtxt("../PP2/data/temp_acqua_mod.txt", unpack=True, skiprows=1)
+temp = temp[-20:]
+utemp_a = np.sqrt(np.sum((temp - np.mean(temp))**2)/(len(temp)- 1))
+print(utemp_a)
 
 for i in range (1, 4):
 	temperatura, pressione = np.loadtxt(f"data/temp_pressione_{i}_mod.txt", skiprows=1, unpack=True)
@@ -47,7 +51,10 @@ for i in range (1, 4):
 	i_min = -1
 	i_max = -1
 
+
 	T0 = temperatura[0] + 273.15
+	pressione = pressione
+
 
 	for i in range(len(temperatura)):
 		if (temperatura[i] > T_min and i_min == -1):
@@ -58,30 +65,32 @@ for i in range (1, 4):
 	temperatura = temperatura[i_min:i_max]
 	pressione = pressione[i_min:i_max]
 
+	temperatura = temperatura*2 - 26
 
-	plt.plot(temperatura, pressione, label="Pressione", color="red")
-	plt.grid(True)
-	plt.show()
+	# plt.plot(temperatura, pressione, label="Pressione", color="red")
+	# plt.grid(True)
+	# plt.show()
 
 	temperatura += 273.15
 	uT0 = 0.014
 	P0 = 100.300
 	uP0 = 0.003
 
-	T0 = temperatura[0]
-	P0 = 100.300 + pressione[0]
+	P0 = 100.300
 
-
-	up = 0.0014
+	up = 0.038
 	udpsup = np.sqrt((up/P0)**2 + (pressione/P0**2*uP0)**2)
+	# print(udpsup/(pressione/P0))
 
 
-	udt = 0.02
+	udt = 2*np.sqrt(0.014**2 + 0.03**2)
 	udtsut = np.sqrt((udt/T0)**2 + (temperatura/T0**2*uT0)**2)
+	# print(udtsut/((temperatura -T0)/T0))
 
-	print(pressione[-1], temperatura[-1], T0, P0)
-	m, um, c, uc, cov, rho = my.lin_fit((temperatura - T0)/T0, (pressione-pressione[0])/P0, udpsup, plot=True)
+	# print(pressione[-1], temperatura[-1], T0, P0)
+	m, um, c, uc, cov, rho = my.lin_fit((temperatura - T0)/T0, pressione/P0, udpsup, plot=True, verbose=False)
 	plt.show()
-	m, um, c, uc, cov, rho = my.lin_fit((temperatura - T0)/T0, (pressione-pressione[0])/P0, np.sqrt(udpsup**2 + (m*udtsut)**2), plot=True)
+	m, um, c, uc, cov, rho = my.lin_fit((temperatura - T0)/T0, pressione/P0, np.sqrt(udpsup**2 + (m*udtsut)**2), plot=True)
 	plt.show()
 	print((m - 1)/um)
+
