@@ -54,27 +54,27 @@ for i in range (1, 4):
 	T0 = temperatura[0] + 273.15
 	pressione = pressione
 
-	for i in range(len(temperatura)):
-		if (temperatura[i] > T_min and i_min == -1):
-			i_min = i
-		if (temperatura[i] > T_max and i_max == -1):
-			i_max = i
+	for j in range(len(temperatura)):
+		if (temperatura[j] > T_min and i_min == -1):
+			i_min = j
+		if (temperatura[j] > T_max and i_max == -1):
+			i_max = j
 
 	temperatura = temperatura[i_min:i_max]
 	pressione = pressione[i_min:i_max]
 
-	#temperatura = temperatura*2 - 26
-
-	# plt.plot(temperatura, pressione, label="Pressione", color="red")
-	# plt.grid(True)
-	# plt.show()
-
-
 	temperatura += 273.15
 	pressioni_vapore = np.exp(23.1964 - (3816.44/(temperatura - 46.13))) / 1000
-	print(pressioni_vapore)
+	# x = np.linspace(273,323, 1000)
+	# plt.plot(x - 273, np.exp(23.1964 - (3816.44/(x - 46.13))) / 1000, color="green", label="p(T)")
+	# plt.title("Pressione di vapore")
+	# plt.xlabel("$T [^oC]$")
+	# plt.ylabel("p [kPa]")
+	# plt.grid(True)
+	# plt.savefig(f"img/grafico_antoine.png")
+	# plt.show()
+	pressioni_vapore = pressioni_vapore - pressioni_vapore[0]
 	pressione = (pressione - pressioni_vapore)*0.965
-	print(pressioni_vapore[-1])
 	uT0 = 0.014
 	P0 = 100.300
 	uP0 = 0.003
@@ -83,21 +83,24 @@ for i in range (1, 4):
 
 	up = 0.038
 	udpsup = np.sqrt((up*0.965/P0)**2 + (pressione/P0**2*uP0)**2 + (pressione/0.965/P0*0.009)**2)
-	# print(udpsup/(pressione/P0))
 
-
-	udt = 2*np.sqrt(0.014**2 + 0.03**2)
+	udt = 0.014
 	udtsut = np.sqrt((udt/T0)**2 + (temperatura/T0**2*uT0)**2)
-	# print(udtsut/((temperatura -T0)/T0))
 
-	# print(pressione[-1], temperatura[-1], T0, P0)
-	m, um, c, uc, cov, rho = my.lin_fit((temperatura - T0)/T0, pressione/P0, udpsup, plot=True, verbose=False)
+	m, um, c, uc, cov, rho = my.lin_fit((temperatura - T0)/T0, pressione/P0, udpsup, plot=False, verbose=False)
+	m, um, c, uc, cov, rho = my.lin_fit((temperatura - T0)/T0, pressione/P0, np.sqrt(udpsup**2 + (m*udtsut)**2), plot=True, verbose=False)
+	plt.title("Fit $\\Delta p/p_0$ vs $\\Delta T/T_0$ con correzioni")
+	plt.xlabel("$\\Delta T/T_0$")
+	plt.ylabel("$\\Delta p / p_0$")
+	plt.grid()
+	plt.legend()
+	plt.savefig(f"img/fit_lin_antoine_{i}.png")
 	plt.show()
-	m, um, c, uc, cov, rho = my.lin_fit((temperatura - T0)/T0, pressione/P0, np.sqrt(udpsup**2 + (m*udtsut)**2), plot=True)
-	plt.show()
+
 	m_list.append(m)
 	um_list.append(um)
-	print(f"{i}\t& {m}\t& {um}\t& {c}\t& {uc}\t& {cov}\t& {rho}\\\\")
+
+	print(f"{i}\t& {m}\t& {um} \\\\")
 	
 	y_pred = (temperatura - T0)/T0* m + c
 	res = y_pred - pressione/P0
@@ -114,7 +117,7 @@ for i in range (1, 4):
 	plt.savefig(f"img/res_norm_antoine_{i}.png")
 	plt.show()
 
-print(np.mean(m_list))
-sigma_a = np.sqrt(np.sum((m_list - np.mean(m_list))**2/(len(m_list) - 1)))/np.sqrt(len(m_list))
-sigma_tot = np.sqrt( (um_list[0]/len(m_list))**2 + (um_list[1]/len(m_list))**2 + (um_list[2]/len(m_list))**2 + sigma_a**2)
-print(sigma_tot)
+print(f"{np.mean(m_list)} \pm {(np.max(m_list) - np.min(m_list))/2}")
+# sigma_a = np.sqrt(np.sum((m_list - np.mean(m_list))**2/(len(m_list) - 1)))/np.sqrt(len(m_list))
+# sigma_tot = np.sqrt( (um_list[0]/len(m_list))**2 + (um_list[1]/len(m_list))**2 + (um_list[2]/len(m_list))**2 + sigma_a**2)
+# print(sigma_tot)

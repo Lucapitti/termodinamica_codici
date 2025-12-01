@@ -64,35 +64,29 @@ for i in range (1,3):
 
 	vol_cil = (1.895**2)*np.pi*(8.81 - 0.23 -3.27)
 	uV0 = np.sqrt((2*vol_cil/1.895 * 0.005)**2 + (vol_cil/(8.81 - 0.23 -3.27) * 0.0087)**2)
-	print(vol_cil)
 	vol_tubi = (0.32/2)**2*np.pi*52
-	print(vol_tubi)
 
-	volume = (3.25/2)**2*np.pi * altezza
+	dvolume = (3.25/2)**2*np.pi * altezza
 	T0 = temperatura[0]
-	V0 = vol_cil + vol_tubi + volume[0]
+	V0 = vol_cil + vol_tubi + dvolume[0]
+	uv = np.sqrt((dvolume/altezza*0.0018)**2 + (0.01* 3.25*np.pi * altezza)**2)
 
-	# plt.plot(temperatura, volume, label="altezza", color="red")
-	# plt.grid(True)
-	# plt.show()
-
-	uv = 0.02 #circa
 	udvsuv = np.sqrt((uv/V0)**2 + (altezza/V0**2*uV0)**2)
 
-	udt = 0.02
+	udt = 0.014
 	udtsut = np.sqrt((udt/T0)**2 + (temperatura/T0**2*uT0)**2)
 
-	m, um, c, uc, cov, rho = my.lin_fit((temperatura - T0)/T0, volume/V0, udvsuv, plot=False, verbose=False)
-	m, um, c, uc, cov, rho = my.lin_fit((temperatura - T0)/T0, volume/V0, np.sqrt(udvsuv**2 + (m*udtsut)**2), plot=True)
+	m, um, c, uc, cov, rho = my.lin_fit((temperatura - T0)/T0, dvolume/V0, udvsuv, plot=False, verbose=False)
+	m, um, c, uc, cov, rho = my.lin_fit((temperatura - T0)/T0, dvolume/V0, np.sqrt(udvsuv**2 + (m*udtsut)**2), plot=True)
 	plt.show()
 
 	y_pred = (temperatura - T0)/T0 * m + c
-	res = y_pred - (volume)/V0
+	res = y_pred - (dvolume)/V0
 	res_norm = res / np.sqrt(udvsuv**2 + (m*udtsut)**2)
 
 	plt.figure()
 	plt.axhline(0, lw=0.8, color='black')
-	plt.errorbar((volume)/V0, res_norm, yerr=np.ones_like(res_norm), fmt='o')
+	plt.errorbar(dvolume/V0, res_norm, yerr=np.ones_like(res_norm), fmt='o')
 	plt.title("Residui normalizzati")
 	plt.xlabel("pressione [kPa]")
 	plt.ylabel("Residui normalizzati")

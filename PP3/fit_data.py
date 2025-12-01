@@ -77,7 +77,7 @@ for i in range (1, 4):
 	# print(udpsup/(pressione/P0))
 
 
-	udt = 0.02
+	udt = 0.014
 	udtsut = np.sqrt((udt/T0)**2 + (temperatura/T0**2*uT0)**2)
 	# print(udtsut/((temperatura -T0)/T0))
 
@@ -96,7 +96,7 @@ for i in range (1, 4):
 	plt.legend()
 	plt.savefig(f"img/fit_lin_dp_dt_{i}.png")
 	plt.show()
-	print(f"{i}\t& {m}\t& {um}\t& {c}\t& {uc}\t& {cov}\t& {rho}\\\\")
+	print(f"{i}\t& {m}\t& {um} \\\\")
 	res = (y - (m*x + c))/ucomb
 	chi2_red = np.sum(res**2) / (len(y)-2)
 	# print(chi2_red)
@@ -108,10 +108,10 @@ for i in range (1, 4):
 	plt.savefig(f"img/res_norm_dp_dt_{i}.png")
 	plt.show()
 
-print(np.mean(m_list))
-sigma_a = np.sqrt(np.sum((m_list - np.mean(m_list))**2/(len(m_list) - 1)))/np.sqrt(len(m_list))
-sigma_tot = np.sqrt( (um_list[0]/len(m_list))**2 + (um_list[1]/len(m_list))**2 + (um_list[2]/len(m_list))**2 + sigma_a**2)
-print(sigma_tot)
+print(f"{np.mean(m_list)} \pm {(np.max(m_list) - np.min(m_list))/2}")
+# sigma_a = np.sqrt(np.sum((m_list - np.mean(m_list))**2/(len(m_list) - 1)))/np.sqrt(len(m_list))
+# sigma_tot = np.sqrt( (um_list[0]/len(m_list))**2 + (um_list[1]/len(m_list))**2 + (um_list[2]/len(m_list))**2 + sigma_a**2)
+# print(sigma_tot)
 
 # plt.axvspan(T_min, T_max, color='orange', alpha=0.3, label='intervallo per fit lineare')
 # plt.xlabel("$T [^oC]$")
