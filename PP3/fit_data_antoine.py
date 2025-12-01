@@ -52,8 +52,6 @@ for i in range (1, 4):
 	i_max = -1
 
 	T0 = temperatura[0] + 273.15
-	pressione = pressione
-
 	for j in range(len(temperatura)):
 		if (temperatura[j] > T_min and i_min == -1):
 			i_min = j
@@ -66,20 +64,27 @@ for i in range (1, 4):
 	temperatura += 273.15
 	pressioni_vapore = np.exp(23.1964 - (3816.44/(temperatura - 46.13))) / 1000
 	# x = np.linspace(273,323, 1000)
-	# plt.plot(x - 273, np.exp(23.1964 - (3816.44/(x - 46.13))) / 1000, color="green", label="p(T)")
+	# plt.plot(x - 273, np.exp(23.1964 - (3816.44/(x - 46.13))) / 1000, color="magenta", label="p(T)")
 	# plt.title("Pressione di vapore")
 	# plt.xlabel("$T [^oC]$")
 	# plt.ylabel("p [kPa]")
 	# plt.grid(True)
+	# plt.legend()
 	# plt.savefig(f"img/grafico_antoine.png")
 	# plt.show()
+
+	
+	P0 = 100.300
 	pressioni_vapore = pressioni_vapore - pressioni_vapore[0]
+	idx_mid = len(pressione) // 2
+
+	print(f"{temperatura[0] - 273.15} & {P0 + pressione[0]} & {P0 + pressione[0]}\\\\")
+	print(f"{temperatura[idx_mid] - 273.15} & {P0 + pressione[idx_mid] - pressioni_vapore[idx_mid]} & {P0 + pressione[idx_mid]}\\\\")
+	print(f"{temperatura[-1] - 273.15} & {P0 + pressione[-1] - pressioni_vapore[-1]} & {P0 + pressione[-1]}\\\\")
+	print((P0 + pressione[-1] - pressioni_vapore[-1] - (P0 + pressione[0]))/(temperatura[-1] - temperatura[0]))
 	pressione = (pressione - pressioni_vapore)*0.965
 	uT0 = 0.014
-	P0 = 100.300
 	uP0 = 0.003
-
-	P0 = 100.300
 
 	up = 0.038
 	udpsup = np.sqrt((up*0.965/P0)**2 + (pressione/P0**2*uP0)**2 + (pressione/0.965/P0*0.009)**2)

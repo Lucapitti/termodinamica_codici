@@ -63,6 +63,7 @@ for i in range (1,3):
 
 
 	vol_cil = (1.895**2)*np.pi*(8.81 - 0.23 -3.27)
+	print(vol_cil)
 	uV0 = np.sqrt((2*vol_cil/1.895 * 0.005)**2 + (vol_cil/(8.81 - 0.23 -3.27) * 0.0087)**2)
 	vol_tubi = (0.32/2)**2*np.pi*52
 

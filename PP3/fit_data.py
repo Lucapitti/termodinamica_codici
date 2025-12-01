@@ -96,7 +96,7 @@ for i in range (1, 4):
 	plt.legend()
 	plt.savefig(f"img/fit_lin_dp_dt_{i}.png")
 	plt.show()
-	print(f"{i}\t& {m}\t& {um} \\\\")
+	print(f"{i}\t& {m}\t& {um}\\\\")
 	res = (y - (m*x + c))/ucomb
 	chi2_red = np.sum(res**2) / (len(y)-2)
 	# print(chi2_red)
