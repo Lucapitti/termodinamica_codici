@@ -2,8 +2,8 @@ import my_lib_santanastasio as my
 import numpy as np
 import matplotlib.pyplot as plt
 
-for i in range (1,3):
-	temperatura, altezza = np.loadtxt(f"data/temp_altezza_{i}_mod.txt", skiprows=1, unpack=True)
+for j in range (1,3):
+	temperatura, altezza = np.loadtxt(f"data/temp_altezza_{j}_mod.txt", skiprows=1, unpack=True)
 	delta_volume = (3.25/2)**2 * np.pi * (altezza * 100)
 	udv = np.sqrt(((3.25/2)**2 * np.pi * 0.00625 / np.sqrt(12))**2 + ((3.25/2) * np.pi * altezza * 100 * 0.01)**2)
 	ut = np.repeat(0.014, temperatura.size)
@@ -44,22 +44,54 @@ for i in range (1,3):
 	P0 = 100.300
 	uP0 = 0.003
 
-	print(f"uV = ({uV0},{np.sqrt(udv[-1]**2 + uvol_aggiuntivo**2)}) dove uvol_aggiuntivo = {uvol_aggiuntivo}")
-	print(f"V0: {V0} variazione V iniziale: {delta_volume[0]}, V aggiuntivo: {volume_aggiuntivo}, V finale: {volume_aggiuntivo + delta_volume[-1]}")
+	print(f"V0: {V0} variazione V iniziale: {delta_volume[0]}, V aggiuntivo: {volume_aggiuntivo}")
+	
+	temperatura = ((temperatura * V0) + ((26 + 273.15) * delta_volume)) / (V0 + delta_volume)
+
+	#Legge di Antoine
+	
+	pressioni_vapore = np.exp(23.1964 - (3816.44/(temperatura - 46.13))) / 1000
+	print(f"Le pressioni vapore vanno da {pressioni_vapore[0]} a {pressioni_vapore[-1]}")
+	p_aria = np.repeat(P0, pressioni_vapore.size) - pressioni_vapore
+	print(f"Le pressioni dell' aria vanno da {p_aria[0]} a {p_aria[-1]}")
+
+	n_aria = p_aria * (volume_aggiuntivo + delta_volume) / (8.314 * temperatura)
+	plt.plot(temperatura, n_aria)
+	plt.title("moli di aria in funzione della temperatura")
+	plt.xlabel("$n_{aria}$")
+	plt.ylabel("temperatura")
+	plt.grid(True)
+	plt.savefig(f"new_moli_aria_temperatura_{j}")
+	plt.show()
+
+	m, um, c, uc, cov, rho = my.lin_fit(temperatura, n_aria, np.sqrt((p_aria * udv/ (8.314 * temperatura))**2 + (ut * p_aria * (volume_aggiuntivo + delta_volume) / (8.314 * temperatura**2))**2), plot=True)
+	plt.show()
+	print(f"coefficente: {m}, incertezza: {um}")
+
+	vol_dry = (n_aria * 8.314 * temperatura) / P0
+
+
+
+	dvsuv = (vol_dry - vol_dry[0]) / vol_dry[0]
+	dtsut = (temperatura - T0) / T0
+	udvsuv = np.sqrt((udv/V0)**2 + (delta_volume/V0**2*uV0)**2)
+	udtsut = np.sqrt((ut/T0)**2 + (temperatura/T0**2*uT0)**2)
+	"""
+
+	
 
 	dvsuv = delta_volume / V0
 	dtsut = (temperatura - T0) / T0
 	udvsuv = np.sqrt((udv/V0)**2 + (delta_volume/V0**2*uV0)**2)
 	udtsut = np.sqrt((ut/T0)**2 + (temperatura/T0**2*uT0)**2)
-
-
+	"""
 	m, um, c, uc, cov, rho = my.lin_fit(dtsut, dvsuv, udvsuv, plot=False)
 	m, um, c, uc, cov, rho = my.lin_fit(dtsut, dvsuv, np.sqrt(udvsuv**2 + (m*udtsut)**2), plot=True)
 	plt.title("Fit $\Delta V / V_0$ vs $\Delta T / T_0$")
 	plt.xlabel("$\Delta T / T_0$")
 	plt.ylabel("$\Delta V / V_0$")
 	plt.grid(True)
-	#plt.savefig(f"fit_volume_pressione_{i}")
+	plt.savefig(f"new_fit_volume_pressione_antoine_{j}")
 	plt.show()
 
 
@@ -75,5 +107,5 @@ for i in range (1,3):
 	plt.xlabel("$\Delta T / T_0$")
 	plt.ylabel("Residui normalizzati")
 	plt.grid(True)
-	#plt.savefig(f"residui_volume_pressione_{i}")
+	plt.savefig(f"new_residui_volume_pressione_antoine{j}")
 	plt.show()

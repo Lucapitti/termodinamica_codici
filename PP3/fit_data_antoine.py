@@ -60,6 +60,7 @@ for i in range (1, 4):
 
 	temperatura = temperatura[i_min:i_max]
 	pressione = pressione[i_min:i_max]
+	print(pressione[0], pressione[-1])
 
 	temperatura += 273.15
 	pressioni_vapore = np.exp(23.1964 - (3816.44/(temperatura - 46.13))) / 1000
