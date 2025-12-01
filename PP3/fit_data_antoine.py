@@ -51,11 +51,8 @@ for i in range (1, 4):
 	i_min = -1
 	i_max = -1
 
-
 	T0 = temperatura[0] + 273.15
 	pressione = pressione
-
-
 
 	for i in range(len(temperatura)):
 		if (temperatura[i] > T_min and i_min == -1):
@@ -72,8 +69,10 @@ for i in range (1, 4):
 	# plt.grid(True)
 	# plt.show()
 
+
 	temperatura += 273.15
 	pressioni_vapore = np.exp(23.1964 - (3816.44/(temperatura - 46.13))) / 1000
+	print(pressioni_vapore)
 	pressione = (pressione - pressioni_vapore)*0.965
 	print(pressioni_vapore[-1])
 	uT0 = 0.014
