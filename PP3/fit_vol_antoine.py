@@ -45,8 +45,9 @@ for j in range (1,3):
 	uP0 = 0.003
 
 	print(f"V0: {V0} variazione V iniziale: {delta_volume[0]}, V aggiuntivo: {volume_aggiuntivo}")
-	
-	temperatura = ((temperatura * V0) + ((26 + 273.15) * delta_volume)) / (V0 + delta_volume)
+
+	temperatura = ((temperatura * volume_aggiuntivo) + ((26 + 273.15) * delta_volume)) / (volume_aggiuntivo + delta_volume)
+	ut = np.sqrt(((volume_aggiuntivo / (volume_aggiuntivo + delta_volume))**2 * ut**2) + (((delta_volume * (temperatura - (26 + 273.15))) / ((volume_aggiuntivo + delta_volume)**2))**2 * uvol_aggiuntivo**2) + (((volume_aggiuntivo * ((26 + 273.15) - temperatura)) / ((volume_aggiuntivo + delta_volume)**2))**2 * udv**2))
 
 	#Legge di Antoine
 	
@@ -56,45 +57,39 @@ for j in range (1,3):
 	print(f"Le pressioni dell' aria vanno da {p_aria[0]} a {p_aria[-1]}")
 
 	n_aria = p_aria * (volume_aggiuntivo + delta_volume) / (8.314 * temperatura)
-	plt.plot(temperatura, n_aria)
+	plt.plot(volume_aggiuntivo + delta_volume, n_aria)
 	plt.title("moli di aria in funzione della temperatura")
-	plt.xlabel("$n_{aria}$")
-	plt.ylabel("temperatura")
+	plt.xlabel("temperatura")
+	plt.ylabel("$n_{aria}$")
 	plt.grid(True)
 	plt.savefig(f"new_moli_aria_temperatura_{j}")
 	plt.show()
 
 	m, um, c, uc, cov, rho = my.lin_fit(temperatura, n_aria, np.sqrt((p_aria * udv/ (8.314 * temperatura))**2 + (ut * p_aria * (volume_aggiuntivo + delta_volume) / (8.314 * temperatura**2))**2), plot=True)
+	plt.title("moli di aria in funzione della temperatura")
+	plt.xlabel("temperatura")
+	plt.ylabel("$n_{aria}$")
+	plt.grid(True)
+	plt.savefig(f"fit_moli_aria_temperatura_{j}")
 	plt.show()
 	print(f"coefficente: {m}, incertezza: {um}")
 
 	vol_dry = (n_aria * 8.314 * temperatura) / P0
 
-
-
 	dvsuv = (vol_dry - vol_dry[0]) / vol_dry[0]
 	dtsut = (temperatura - T0) / T0
 	udvsuv = np.sqrt((udv/V0)**2 + (delta_volume/V0**2*uV0)**2)
 	udtsut = np.sqrt((ut/T0)**2 + (temperatura/T0**2*uT0)**2)
-	"""
 
-	
 
-	dvsuv = delta_volume / V0
-	dtsut = (temperatura - T0) / T0
-	udvsuv = np.sqrt((udv/V0)**2 + (delta_volume/V0**2*uV0)**2)
-	udtsut = np.sqrt((ut/T0)**2 + (temperatura/T0**2*uT0)**2)
-	"""
 	m, um, c, uc, cov, rho = my.lin_fit(dtsut, dvsuv, udvsuv, plot=False)
 	m, um, c, uc, cov, rho = my.lin_fit(dtsut, dvsuv, np.sqrt(udvsuv**2 + (m*udtsut)**2), plot=True)
-	plt.title("Fit $\Delta V / V_0$ vs $\Delta T / T_0$")
-	plt.xlabel("$\Delta T / T_0$")
-	plt.ylabel("$\Delta V / V_0$")
+	plt.title("Fit $\Delta V / V$ vs $\Delta T / T$")
+	plt.xlabel("$\Delta T / T$")
+	plt.ylabel("$\Delta V / V$")
 	plt.grid(True)
-	plt.savefig(f"new_fit_volume_pressione_antoine_{j}")
+	plt.savefig(f"fit_volume_temperatura_corretti_{j}")
 	plt.show()
-
-
 
 	y_pred = dtsut * m + c
 	res = y_pred - dvsuv
@@ -104,8 +99,8 @@ for j in range (1,3):
 	plt.axhline(0, lw=0.8, color='black')
 	plt.errorbar(dtsut, res_norm, yerr=np.ones_like(res_norm), fmt='o')
 	plt.title("Residui normalizzati")
-	plt.xlabel("$\Delta T / T_0$")
+	plt.xlabel("$\Delta T / T$")
 	plt.ylabel("Residui normalizzati")
 	plt.grid(True)
-	plt.savefig(f"new_residui_volume_pressione_antoine{j}")
+	plt.savefig(f"residui_volume_temperatura_corretti_{j}")
 	plt.show()
