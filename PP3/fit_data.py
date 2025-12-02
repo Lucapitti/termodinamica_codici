@@ -50,7 +50,6 @@ for i in range (1, 4):
 	i_min = -1
 	i_max = -1
 
-	T0 = temperatura[0] + 273.15
 	pressione = pressione
 	# plt.plot(temperatura, pressione, label=f"presa dati $n^o$ {i}")
 
@@ -65,23 +64,18 @@ for i in range (1, 4):
 	pressione = pressione[i_min:i_max]
 
 	temperatura += 273.15
+	T0 = temperatura[0]
 
-	uT0 = 0.014
-	P0 = 100.300
-	uP0 = 0.003
-
-	P0 = 100.300
+	uT0 = 0.02
+	P0 = 100.300 + pressione[0]
+	uP0 = np.sqrt(0.003**2 + 0.038**2)
 
 	up = 0.038
 	udpsup = np.sqrt((up/P0)**2 + (pressione/P0**2*uP0)**2)
-	# print(udpsup/(pressione/P0))
-
 
 	udt = 0.014
 	udtsut = np.sqrt((udt/T0)**2 + (temperatura/T0**2*uT0)**2)
-	# print(udtsut/((temperatura -T0)/T0))
 
-	# print(pressione[-1], temperatura[-1], T0, P0)
 	x = (temperatura - T0)/T0
 	y = pressione/P0
 	m, um, c, uc, cov, rho = my.lin_fit(x, y, udpsup, plot=False, verbose=False)
@@ -99,7 +93,6 @@ for i in range (1, 4):
 	print(f"{i}\t& {m}\t& {um}\\\\")
 	res = (y - (m*x + c))/ucomb
 	chi2_red = np.sum(res**2) / (len(y)-2)
-	# print(chi2_red)
 	plt.errorbar(x, res, yerr=1, fmt='o')
 	plt.title("Residui normalizzati")
 	plt.xlabel("$\\Delta T/T_0$")

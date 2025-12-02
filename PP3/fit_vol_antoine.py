@@ -46,7 +46,7 @@ for j in range (1,3):
 
 	print(f"V0: {V0} variazione V iniziale: {delta_volume[0]}, V aggiuntivo: {volume_aggiuntivo}")
 	
-	temperatura = ((temperatura * V0) + ((26 + 273.15) * delta_volume)) / (V0 + delta_volume)
+	# temperatura = ((temperatura * V0) + ((26 + 273.15) * delta_volume)) / (V0 + delta_volume)
 
 	#Legge di Antoine
 	
@@ -62,7 +62,6 @@ for j in range (1,3):
 	plt.ylabel("temperatura")
 	plt.grid(True)
 	plt.savefig(f"new_moli_aria_temperatura_{j}")
-	plt.show()
 
 	m, um, c, uc, cov, rho = my.lin_fit(temperatura, n_aria, np.sqrt((p_aria * udv/ (8.314 * temperatura))**2 + (ut * p_aria * (volume_aggiuntivo + delta_volume) / (8.314 * temperatura**2))**2), plot=True)
 	plt.show()
@@ -76,15 +75,14 @@ for j in range (1,3):
 	dtsut = (temperatura - T0) / T0
 	udvsuv = np.sqrt((udv/V0)**2 + (delta_volume/V0**2*uV0)**2)
 	udtsut = np.sqrt((ut/T0)**2 + (temperatura/T0**2*uT0)**2)
+
 	"""
-
-	
-
 	dvsuv = delta_volume / V0
 	dtsut = (temperatura - T0) / T0
 	udvsuv = np.sqrt((udv/V0)**2 + (delta_volume/V0**2*uV0)**2)
 	udtsut = np.sqrt((ut/T0)**2 + (temperatura/T0**2*uT0)**2)
 	"""
+
 	m, um, c, uc, cov, rho = my.lin_fit(dtsut, dvsuv, udvsuv, plot=False)
 	m, um, c, uc, cov, rho = my.lin_fit(dtsut, dvsuv, np.sqrt(udvsuv**2 + (m*udtsut)**2), plot=True)
 	plt.title("Fit $\Delta V / V_0$ vs $\Delta T / T_0$")

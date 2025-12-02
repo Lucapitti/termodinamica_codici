@@ -51,17 +51,15 @@ for i in range (1, 4):
 	i_min = -1
 	i_max = -1
 
-	T0 = temperatura[0] + 273.15
 	for j in range(len(temperatura)):
 		if (temperatura[j] > T_min and i_min == -1):
 			i_min = j
 		if (temperatura[j] > T_max and i_max == -1):
 			i_max = j
-
+	
+	pressione_vap0 = np.exp(23.1964 - (3816.44/(temperatura[0] +273.15 - 46.13))) / 1000
 	temperatura = temperatura[i_min:i_max]
 	pressione = pressione[i_min:i_max]
-	print(pressione[0], pressione[-1])
-
 	temperatura += 273.15
 	pressioni_vapore = np.exp(23.1964 - (3816.44/(temperatura - 46.13))) / 1000
 	# x = np.linspace(273,323, 1000)
@@ -74,18 +72,18 @@ for i in range (1, 4):
 	# plt.savefig(f"img/grafico_antoine.png")
 	# plt.show()
 
-	
-	P0 = 100.300
-	pressioni_vapore = pressioni_vapore - pressioni_vapore[0]
+	pressioni_vapore = pressioni_vapore - pressione_vap0
 	idx_mid = len(pressione) // 2
 
-	print(f"{temperatura[0] - 273.15} & {P0 + pressione[0]} & {P0 + pressione[0]}\\\\")
-	print(f"{temperatura[idx_mid] - 273.15} & {P0 + pressione[idx_mid] - pressioni_vapore[idx_mid]} & {P0 + pressione[idx_mid]}\\\\")
-	print(f"{temperatura[-1] - 273.15} & {P0 + pressione[-1] - pressioni_vapore[-1]} & {P0 + pressione[-1]}\\\\")
-	print((P0 + pressione[-1] - pressioni_vapore[-1] - (P0 + pressione[0]))/(temperatura[-1] - temperatura[0]))
-	pressione = (pressione - pressioni_vapore)*0.965
-	uT0 = 0.014
-	uP0 = 0.003
+	# print(f"{temperatura[0] - 273.15} & {P0 + pressione[0] - pressioni_vapore[0]} & {P0 + pressione[0]}\\\\")
+	# print(f"{temperatura[idx_mid] - 273.15} & {P0 + pressione[idx_mid] - pressioni_vapore[idx_mid]} & {P0 + pressione[idx_mid]}\\\\")
+	# print(f"{temperatura[-1] - 273.15} & {P0 + pressione[-1] - pressioni_vapore[-1]} & {P0 + pressione[-1]}\\\\")
+	# print((P0 + pressione[-1] - pressioni_vapore[-1] - (P0 + pressione[0]))/(temperatura[-1] - temperatura[0]))
+	pressione = (pressione*0.965 - pressioni_vapore)
+	T0 = temperatura[0]
+	P0 = 100.300 + pressione[0]
+	uT0 = 0.02
+	uP0 = np.sqrt(0.003**2 + (0.009*pressione[0])**2 + (0.028*0.965)**2)
 
 	up = 0.038
 	udpsup = np.sqrt((up*0.965/P0)**2 + (pressione/P0**2*uP0)**2 + (pressione/0.965/P0*0.009)**2)
@@ -112,6 +110,7 @@ for i in range (1, 4):
 	res = y_pred - pressione/P0
 
 	res_norm = res / np.sqrt(udpsup**2 + (m*udtsut)**2)
+	chi = res_norm**2/(len(pressione)- 2)
 
 	plt.figure()
 	plt.axhline(0, lw=0.8, color='black')
