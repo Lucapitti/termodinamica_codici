@@ -10,8 +10,10 @@ P0 = 100300 #modifica (Pa)
 uP0 = 0.3 #modifica
 vol_str = 64.09 / 1000000
 uvol_str = 0.36 / 1000000
-vol_pist = 20 / 1000000 #modifica
-uvol_pist = 0.03 / 1000000 #modifica
+S = (32.5/2)**2*np.pi # in (mm^2)
+uS = 32.5*np.pi*0.1 # in (mm^2)
+vol_pist = 20*S/ 1000000 #modifica
+uvol_pist = np.sqrt((0.03*vol_pist/20)**2 + (20*uS)**2) / 1000000 #modifica
 V0 = vol_str + vol_pist
 uV0 = np.sqrt(uvol_str**2 + uvol_pist**2)
 
@@ -19,7 +21,10 @@ massa_aggiunta = 0.07 #modifica (Kg)
 um = 0.00003 #modifica
 
 
-t, dp, pos, temp= np.loadtxt("data.txt", unpack=True)
+# t, dp, pos, temp= np.loadtxt("data.txt", unpack=True)
+t, dp = np.loadtxt("tempo_pressione_mod.txt", skiprows=1, unpack=True)
+t, temp = np.loadtxt("tempo_temperatura_mod.txt", skiprows=1, unpack=True)
+t, pos = np.loadtxt("tempo_posizione_mod.txt", skiprows=1, unpack=True)
 
 plt.plot(t, dp)
 plt.title("Pressione relativa vs tempo")
@@ -67,7 +72,7 @@ upos_c = np.std(pos[i_min_c:i_max_c], ddof=1) / np.sqrt(i_max_c - i_min_c)
 
 Lavoro = massa_aggiunta * G * (pos_c - pos_a)
 uLavoro = np.sqrt((massa_aggiunta * G)**2 * (upos_a**2 + upos_c **2) + (um * G * (pos_c - pos_a))**2)
-print(f"Lavoro: {Lavoro} Incertezza: {uLavoro}")
+print(f"Lavoro: {Lavoro} J Incertezza: {uLavoro} J")
 
 
 Tf = 300 #modifica
