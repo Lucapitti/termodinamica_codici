@@ -80,15 +80,6 @@ for j in range (1,3):
 	udvsuv = np.sqrt((udv/V0)**2 + (delta_volume/V0**2*uV0)**2)
 	udtsut = np.sqrt((ut/T0)**2 + (temperatura/T0**2*uT0)**2)
 
-<<<<<<< HEAD
-	"""
-	dvsuv = delta_volume / V0
-	dtsut = (temperatura - T0) / T0
-	udvsuv = np.sqrt((udv/V0)**2 + (delta_volume/V0**2*uV0)**2)
-	udtsut = np.sqrt((ut/T0)**2 + (temperatura/T0**2*uT0)**2)
-	"""
-=======
->>>>>>> main
 
 	m, um, c, uc, cov, rho = my.lin_fit(dtsut, dvsuv, udvsuv, plot=False)
 	m, um, c, uc, cov, rho = my.lin_fit(dtsut, dvsuv, np.sqrt(udvsuv**2 + (m*udtsut)**2), plot=True)
