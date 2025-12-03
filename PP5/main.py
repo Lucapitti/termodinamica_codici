@@ -69,6 +69,17 @@ Lavoro = massa_aggiunta * G * (pos_c - pos_a)
 uLavoro = np.sqrt((massa_aggiunta * G)**2 * (upos_a**2 + upos_c **2) + (um * G * (pos_c - pos_a))**2)
 print(f"Lavoro: {Lavoro} Incertezza: {uLavoro}")
 
+
+Tf = 300 #modifica
+uTf = 0.2 #modifica
+Tc = 549 #modifica
+uTc = 0.2 #modifica
+if False:
+    Tf = temp[i_min_a:i_max_a].mean()
+    uTf = np.std(temp[i_min_a:i_max_a], ddof=1) / np.sqrt(i_max_a - i_min_a)
+    Tc = temp[i_min_c:i_max_c].mean()
+    uTc = np.std(temp[i_min_c:i_max_c], ddof=1) / np.sqrt(i_max_c - i_min_c)
+
 dv = (3.25/2)**2 * np.pi * pos / 10000
 udv = np.sqrt(((3.25/2)**2 * np.pi * 0.00625 / np.sqrt(12))**2 + ((3.25/2) * np.pi * pos * 0.01)**2) / 10000
 
@@ -81,6 +92,8 @@ utemp_a = np.std(temp[i_min_a:i_max_a], ddof=1) / np.sqrt(i_max_a - i_min_a)
 
 n_mol = (P0 + dp_a)*(V0 + dv_a)/(R*temp_a)
 un_mol = np.sqrt((uP0**2 + udp_a**2)*((V0 + dv_a)/(R*temp_a))**2 + (uV0**2 + udv_a**2)*((P0 + dp_a)/(R*temp_a))**2 + (utemp_a*(P0 + dp_a)*(V0 + dv_a)/(R*temp_a*temp_a))**2)
+
+'''
 Tc = 345 #modifica (Kelvin)
 uTc = 0.2 #modifica
 
@@ -90,6 +103,7 @@ for i in range(len(t)):
         break
 Tf = (P0 + dp[i]) * (V0 + dv[i]) / (R * n_mol) #discuti trascurabilita correlazioni
 uTf = np.sqrt((uP0**2 + (udp_a * np.sqrt(i_max_a - i_min_a))**2)*((uV0 + dv[i])/(R*n_mol))**2 + (V0**2 + (udv_a * np.sqrt(i_max_a - i_min_a))**2)*((P0 + dp[i])/(R*n_mol))**2 + (un_mol*(P0 + dp[i])*(V0 + dv[i])/(R*n_mol*n_mol))**2)
+'''
 
 Qass = n_mol * CP * (Tc - Tf)
 uQass = np.sqrt((un_mol * CP * (Tc - Tf))**2 + (uTc**2 + uTf**2)*(n_mol * CP)**2)
