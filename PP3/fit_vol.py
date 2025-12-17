@@ -15,7 +15,7 @@ for j in range (1,3):
 	i_max = -1
 
 	vol_cil = (1.895**2)*np.pi*(8.81 - 0.23 -3.27)
-	vol_tubi = (0.16)**2*np.pi*52
+	vol_tubi = (0.16)**2*np.pi*62
 	volume_aggiuntivo = vol_cil + vol_tubi
 	uvol_aggiuntivo = np.sqrt((2*vol_cil/1.895 * 0.005)**2 + (vol_cil/(8.81 - 0.23 -3.27) * 0.0087)**2 + (2*vol_tubi/0.16 * 0.0025)**2 + ((0.16)**2*np.pi * 0.03)**2)
 
